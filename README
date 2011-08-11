@@ -1,0 +1,5 @@
+New version of TeXML:
+http://getfo.org/texml/
+
+Not only XML-markup for easy TeX generation (version 1),
+but a framework to create complete XML to PDF conversions.
