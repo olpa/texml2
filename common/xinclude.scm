@@ -2,9 +2,23 @@
 ; to process the Definitive Guide. A probably full implementation
 ; of XInclude can be found in ssax project
 ;
-; No error check for circular includes etc
 
+(define sxslt-id (lambda args args))
+
+; No error check for circular includes etc
+; Let's hope that the attribute "href" always exists
 (define (resolve-xincludes doc basedir)
   (pre-post-order doc `(
       (*text* . ,(lambda (args str) str))
-      (*default* . ,(lambda args args)))))
+      (http://www.w3.org/2001/XInclude:include (
+          (*default*  . ,(lambda (tag . rest)
+              (raise (string-append "xinclude, unsupported tag: " tag))))
+          (@ *preorder* . ,(lambda (dummy . alist)
+                  (let* ((href   (cadr (assoc 'href alist)))
+                         (fname  (path-expand href basedir))
+                         (fixme  (pp fname))
+                         (newdoc (SSAX:XML->SXML (open-input-file fname) '())))
+                    newdoc)))
+          )
+        . ,sxslt-id)
+      (*default* . ,sxslt-id))))
