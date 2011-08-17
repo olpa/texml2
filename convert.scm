@@ -3,6 +3,7 @@
 (load (string-append ssax-sxml "/libs/gambit/myenv.scm"))
 (load (string-append ssax-sxml "/libs/input-parse.scm"))
 (load (string-append ssax-sxml "/libs/srfi-13-local.scm"))
+(load (string-append ssax-sxml "/libs/look-for-str.scm"))
 (load (string-append ssax-sxml "/ssax/char-encoding.scm"))
 (load (string-append ssax-sxml "/ssax/SSAX-code.scm"))
 (load (string-append ssax-sxml "/ssax/SXML-tree-trans.scm"))
@@ -12,7 +13,9 @@
 (load (string-append ssax-sxml "/sxml-tools/sxpath-ext.scm"))
 (load (string-append ssax-sxml "/sxml-tools/txpath.scm"))
 
+(load "common/common.scm")
 (load "common/xinclude.scm")
+(load "common/texml.scm")
 
 ;(display (command-line))
 (define xml-file (cadr (member "--xml" (command-line))))
@@ -20,5 +23,9 @@
 ;(display xml-file)
 ;(newline)
 ;(pp doc (current-output-port))
-(pp (resolve-xincludes doc (path-directory xml-file)) (current-output-port))
+(define doc (resolve-xincludes doc (path-directory xml-file)))
+(define texml (common-transform doc))
+(pp texml (current-output-port))
+(texml-serialize texml cout)
+(newline)
 (exit)
