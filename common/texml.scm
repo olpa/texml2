@@ -12,4 +12,5 @@
                           (cout #\})))
       (*text* . ,(lambda (dummy s) (cout s)))
       )))
-    (pre-post-order doc st)))
+    (pre-post-order doc st)
+    (cout #\newline)))
