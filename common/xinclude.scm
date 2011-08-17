@@ -3,8 +3,6 @@
 ; of XInclude can be found in ssax project
 ;
 
-(define sxslt-id (lambda args args))
-
 ; No error check for circular includes etc
 ; Let's hope that the attribute "href" always exists
 (define (resolve-xincludes doc basedir)
@@ -18,7 +16,7 @@
                          (fname  (path-expand href basedir))
                          (fixme  (pp fname))
                          (newdoc (SSAX:XML->SXML (open-input-file fname) '())))
-                    newdoc)))
+                    (cdr newdoc))))
           )
-        . ,sxslt-id)
+        . ,(lambda (tag rest) rest))
       (*default* . ,sxslt-id))))
