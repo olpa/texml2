@@ -26,7 +26,7 @@
 (pp texml (current-output-port))
 
 (define tex-port (open-output-file tex-file))
-(define (tex-port-out . args) (map (lambda (datum) (display datum tex-port)) args))
+(define tex-port-out (make-tex-output tex-port))
 (texml-serialize texml tex-port-out)
 (close-output-port tex-port)
 (exit)
