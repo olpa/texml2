@@ -1,0 +1,6 @@
+\ProvidesPackage{texml}[2011/08/18 TeXML support]
+
+\usepackage{xcolor}
+
+\newenvironment{para}{\ignorespaces}{\par\ignorespaces}
+\newcommand{\TODO}[1]{\begin{para}\textbf{\textcolor{red}{TODO} #1}\end{para}}
