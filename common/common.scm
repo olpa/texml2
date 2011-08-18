@@ -5,5 +5,10 @@
       (*default* *preorder* . ,(lambda (tag . rest)
           (display (string-append "*** Unprocessed tag: " (symbol->string tag) "\n") (current-error-port))
           `(cmd "TODO" (gr ,(symbol->string tag)))))
-      (*TOP* . ,(lambda (tag . rest) (cons 'texml rest)))
+      (*TOP* . ,(lambda (tag . rest)
+          `(texml
+             (cmd "documentclass" (gr "article"))
+             (cmd "usepackage" (gr "texml"))
+             (env "document"
+                  ,@rest))))
       )))
