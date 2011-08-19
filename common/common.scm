@@ -12,6 +12,7 @@
       (*text*          . ,(lambda (dummy s) s))
       (@    *preorder* . ,(lambda args '()))
       (,(db "chapter") . ,(lambda (tag . rest) rest))
+      (,(db "section") . ,(lambda (tag . rest) rest))
       (,(db "para")    . ,(lambda (tag . rest) `(env "para" ,@rest)))
       (,(db "acronym") . ,(lambda (tag . rest) `(cmd "acro" (wr nonl2) (gr ,@rest))))
       (*TOP* . ,(lambda (tag . rest)
