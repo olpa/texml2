@@ -11,6 +11,14 @@
             (set! after-weak-nl? (eq? 'weak-nl datum))
             (loop (cdr ls))))))))
 
+(define (texml-wr-has-option?2 opt rest)
+  (let ((kids (car rest)))
+    (if (or (null? kids) (null? (cdr kids)))
+      #t
+      (memq opt (caddr kids)))))
+(define (texml-wr-has-option? opt kids)
+  (and (not (null? kids)) (memq opt (car kids))))
+
 (define (texml-serialize doc cout)
   (letrec ((st `(
       (texml . ,sxslt-id)
@@ -19,7 +27,9 @@
                            (if (null? rest)
 	 (cout "{}")
 	 (pre-post-order rest st))
-                           (cout 'weak-nl)))
+                           (if (texml-wr-has-option? 'nonl2 rest)
+	 #f
+	 (cout 'weak-nl))))
       (gr *preorder* . ,(lambda (gr-tag . rest)
                           (cout #\{)
                           (pre-post-order rest st)
@@ -29,5 +39,6 @@
                           (pre-post-order rest st)
                           (cout 'weak-nl "\\end{" env-name #\} 'weak-nl)))
       (*text* . ,(lambda (dummy s) (cout s)))
+      (wr *preorder* . ,(lambda dummy #f))
       )))
     (pre-post-order doc st)))
