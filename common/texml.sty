@@ -2,8 +2,6 @@
 
 \usepackage{xcolor}
 
-\catcode`\^^M=10
-
 \newenvironment{para}{\ignorespaces}{\par\ignorespaces}
 \newcommand{\TODO}[1]{\begin{para}\textbf{\textcolor{red}{TODO} #1}\end{para}}
 
@@ -28,3 +26,11 @@
 \newcommand\acro[1]{\textSMC{#1}\@}
 % <copy-paste> from ltugboat.cls
 
+\catcode`\^^M=10
+\catcode`\$=11
+\catcode`\&=11
+\catcode`\^=11
+\catcode`\_=11
+\catcode`\~=11
+\catcode`\%=11
+\catcode`\#=11
