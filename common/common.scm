@@ -13,7 +13,7 @@
       (@    *preorder* . ,(lambda args '()))
       (,(db "chapter") . ,(lambda (tag . rest) rest))
       (,(db "para")    . ,(lambda (tag . rest) `(env "para" ,@rest)))
-      (,(db "acronym") . ,(lambda (tag . rest) `(cmd "acro" (gr ,@rest))))
+      (,(db "acronym") . ,(lambda (tag . rest) `(cmd "acro" (wr nonl2) (gr ,@rest))))
       (*TOP* . ,(lambda (tag . rest)
           `(texml
              (cmd "documentclass" (gr "book"))
