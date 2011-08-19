@@ -23,7 +23,7 @@
 ;(pp doc (current-output-port))
 (define doc (resolve-xincludes doc (path-directory xml-file)))
 (define texml (common-transform doc))
-(pp texml (current-output-port))
+;(pp texml (current-output-port))
 
 (define tex-port (open-output-file tex-file))
 (define tex-port-out (make-tex-output tex-port))
