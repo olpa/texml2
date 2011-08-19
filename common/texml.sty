@@ -2,5 +2,29 @@
 
 \usepackage{xcolor}
 
+\catcode`\^^M=10
+
 \newenvironment{para}{\ignorespaces}{\par\ignorespaces}
 \newcommand{\TODO}[1]{\begin{para}\textbf{\textcolor{red}{TODO} #1}\end{para}}
+
+% <copy-paste> from ltugboat.cls
+\DeclareRobustCommand\SMC{%
+  \ifx\@currsize\normalsize\small\else
+   \ifx\@currsize\small\footnotesize\else
+    \ifx\@currsize\footnotesize\scriptsize\else
+     \ifx\@currsize\large\normalsize\else
+      \ifx\@currsize\Large\large\else
+       \ifx\@currsize\LARGE\Large\else
+        \ifx\@currsize\scriptsize\tiny\else
+         \ifx\@currsize\tiny\tiny\else
+          \ifx\@currsize\huge\LARGE\else
+           \ifx\@currsize\Huge\huge\else
+            \small\SMC@unknown@warning
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+}
+\newcommand\SMC@unknown@warning{\TBWarning{\string\SMC: nonstandard
+    text font size command -- using \string\small}}
+\newcommand\textSMC[1]{{\SMC #1}}
+\newcommand\acro[1]{\textSMC{#1}\@}
+% <copy-paste> from ltugboat.cls
+
