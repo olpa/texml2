@@ -5,6 +5,10 @@
 (define (db tagname)
   (string->symbol (string-append "http://docbook.org/ns/docbook:" tagname)))
 
+(define (direct-map-inline xml-tag tex-command)
+  (cons (db xml-tag)
+        (lambda (tag . rest) `(cmd ,tex-command (wr nonl2) (gr ,@rest)))))
+
 (define (common-transform doc)
   (define (sxslt-unknown-tag tag . rest)
     (display (string-append "*** Unprocessed tag: "
@@ -26,8 +30,11 @@
       (,(db "releaseinfo") . ,sxslt-drop)
       (,(db "para")        . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
       (,(db "indexterm") *preorder* . ,sxslt-drop)
-      (,(db "tag")     . ,(lambda (tag . rest) `(cmd "tag" (wr nonl2) (gr ,@rest))))
-      (,(db "acronym") . ,(lambda (tag . rest) `(cmd "acro" (wr nonl2) (gr ,@rest))))
+      ,(direct-map-inline "tag"       "tag")
+      ,(direct-map-inline "acronym"   "acro")
+      ,(direct-map-inline "firstterm" "firstterm")
+      (,(db "phrase")        . ,sxslt-flatten)
+      (,(db "xref") *preorder*  . ,(lambda args "(TODO-xref)"))
       (*TOP* . ,(lambda (tag . rest)
           `(texml
              (cmd "documentclass" (gr "book"))
