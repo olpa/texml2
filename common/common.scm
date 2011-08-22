@@ -24,7 +24,7 @@
       (,(db "info")        . ,sxslt-flatten)
       (,(db "pubdate")     . ,sxslt-drop)
       (,(db "releaseinfo") . ,sxslt-drop)
-      (,(db "para")        . ,(lambda (tag . rest) `(env "para" ,@rest)))
+      (,(db "para")        . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
       (,(db "indexterm") *preorder* . ,sxslt-drop)
       (,(db "tag")     . ,(lambda (tag . rest) `(cmd "tag" (wr nonl2) (gr ,@rest))))
       (,(db "acronym") . ,(lambda (tag . rest) `(cmd "acro" (wr nonl2) (gr ,@rest))))
