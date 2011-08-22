@@ -5,6 +5,8 @@
 \newenvironment{para}{\ignorespaces}{\par\ignorespaces}
 \newcommand{\TODO}[1]{\begin{para}\textbf{\textcolor{red}{TODO} #1}\end{para}}
 
+\let\tag=\texttt
+
 % <copy-paste> from ltugboat.cls
 \DeclareRobustCommand\SMC{%
   \ifx\@currsize\normalsize\small\else
