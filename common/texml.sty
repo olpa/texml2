@@ -1,11 +1,16 @@
 \ProvidesPackage{texml}[2011/08/18 TeXML support]
 
 \usepackage{xcolor}
+\usepackage{alltt}
 
 \newenvironment{para}{\ignorespaces}{\par\ignorespaces}
 \newcommand{\TODO}[1]{\begin{para}\textbf{\textcolor{red}{TODO} #1}\end{para}}
 
+\newenvironment{programlisting}{\begin{alltt}}{\end{alltt}}
+
 \let\tag=\texttt
+\let\firstterm=\textit
+\let\command=\texttt
 
 % <copy-paste> from ltugboat.cls
 \DeclareRobustCommand\SMC{%
@@ -26,7 +31,8 @@
     text font size command -- using \string\small}}
 \newcommand\textSMC[1]{{\SMC #1}}
 \newcommand\acro[1]{\textSMC{#1}\@}
-% <copy-paste> from ltugboat.cls
+% </copy-paste> from ltugboat.cls
+\let\acronym=\acro
 
 \catcode`\^^M=10
 \catcode`\$=11
