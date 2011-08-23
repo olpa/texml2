@@ -1,0 +1,3 @@
+svn co https://docbook.svn.sourceforge.net/svnroot/docbook/trunk/xsl
+svn co https://docbook.svn.sourceforge.net/svnroot/docbook/trunk/gentext
+
