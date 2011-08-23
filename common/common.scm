@@ -8,13 +8,14 @@
 (define (direct-map-inline xml-tag tex-command)
   (cons (db xml-tag)
         (lambda (tag . rest) `(cmd ,tex-command (wr nonl2) (gr ,@rest)))))
+(define (sxslt-unknown-tag tag . rest)
+  (display (string-append "*** Unprocessed tag: "
+                          (symbol->string tag) "\n") (current-error-port))
+  `(cmd "TODO" (gr ,(symbol->string tag))))
 
 (define (common-transform doc)
-  (define (sxslt-unknown-tag tag . rest)
-    (display (string-append "*** Unprocessed tag: "
-	(symbol->string tag) "\n") (current-error-port))
-    `(cmd "TODO" (gr ,(symbol->string tag))))
-  (pre-post-order doc `(
+  (define inquote? #f) ; #f=level0,2,4... #t=level1,3,5...
+  (define conv-map `(
       (*default* *preorder* . ,sxslt-unknown-tag)
       (*PI* *preorder* . ,sxslt-drop)
       (*text*          . ,sxslt-flatten)
@@ -35,6 +36,7 @@
       ,(direct-map-inline "acronym"   "acronym")
       ,(direct-map-inline "firstterm" "firstterm")
       ,(direct-map-inline "command"   "command")
+      ,(direct-map-inline "uri"       "uri")
       (,(db "phrase")        . ,sxslt-flatten)
       (,(db "xref") *preorder*  . ,(lambda args "(TODO-xref)"))
       (*TOP* . ,(lambda (tag . rest)
@@ -43,4 +45,13 @@
              (cmd "usepackage" (gr "texml"))
              (env "document"
                   ,@rest))))
-      )))
+      (,(db "quote") *preorder* . ,(lambda (tag . rest)
+           (set! inquote? (not inquote?))
+           (let ((in (pre-post-order rest conv-map))
+                 (bq `(lang ,(if inquote? "startquote" "nestedstartquote")))
+                 (eq `(lang ,(if inquote? "endquote" "nestedendquote"))))
+             (set! inquote? (not inquote?))
+             (list bq in eq))))
+      ))
+  (pre-post-order doc conv-map)
+  )
