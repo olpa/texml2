@@ -5,12 +5,14 @@
 
 \newenvironment{para}{\ignorespaces}{\par\ignorespaces}
 \newcommand{\TODO}[1]{\begin{para}\textbf{\textcolor{red}{TODO} #1}\end{para}}
+\newcommand{\ERROR}[1]{\textcolor{red}{#1}}
 
 \newenvironment{programlisting}{\begin{alltt}}{\end{alltt}}
 
 \let\tag=\texttt
 \let\firstterm=\textit
 \let\command=\texttt
+\let\uri=\texttt
 
 % <copy-paste> from ltugboat.cls
 \DeclareRobustCommand\SMC{%
