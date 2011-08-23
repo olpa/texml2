@@ -46,5 +46,8 @@
                           (cout "\\end{" env-name #\} 'weak-nl)))
       (*text* . ,(lambda (dummy s) (cout s)))
       (wr *preorder* . ,(lambda dummy #f))
+      (*default* *preorder* . ,(lambda args
+                 (cerr "*** Unknown TeXML element: " (car args) #\newline)
+                 (cout "\\ERROR{" args "}")))
       )))
     (pre-post-order doc st)))
