@@ -16,13 +16,14 @@
 
 ; Language file: convert from XML to internal tables
 (define (lang-xml-to-table lang doc)
+  (define (xml-pair-to-table sxml-node)
+    (let ((k (sxml:string ((sxpath '(@ key))  sxml-node)))
+          (v (sxml:string ((sxpath '(@ text)) sxml-node))))
+      (set! translations-table
+        (cons (list (string-append lang "/"  k) v) translations-table))))
   (define nset ((sxpath '(locale gentext)) doc))
-  (for-each (lambda (sxml-gentext)
-              (let ((k (sxml:string ((sxpath '(@ key))  sxml-gentext)))
-                    (v (sxml:string ((sxpath '(@ text)) sxml-gentext))))
-                (set! translations-table (cons
-                    (list (string-append lang "/"  k) v) translations-table))))
-            nset))
+  (for-each xml-pair-to-table ((sxpath '(locale gentext)) doc))
+  (for-each xml-pair-to-table ((sxpath '(locale dingbat)) doc)))
 
 ; Load several language files, plus the default one
 (define (load-languages llist)
