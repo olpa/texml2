@@ -16,12 +16,14 @@
 (load "common/common.scm")
 (load "common/xinclude.scm")
 (load "common/texml.scm")
+(load "common/lang.scm")
 
 (define xml-file (cadr (member "--xml" (command-line))))
 (define tex-file (cadr (member "--tex" (command-line))))
 (define doc (SSAX:XML->SXML (open-input-file xml-file) '()))
 ;(pp doc (current-output-port))
 (define doc (resolve-xincludes doc (path-directory xml-file)))
+(load-languages '())
 (define texml (common-transform doc))
 ;(pp texml (current-output-port))
 
