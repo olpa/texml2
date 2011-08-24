@@ -15,6 +15,7 @@
 
 (define (common-transform doc)
   (define inquote? #f) ; #f=level0,2,4... #t=level1,3,5...
+  (define (lang key) (gentext default-language key))
   (define conv-map `(
       (*default* *preorder* . ,sxslt-unknown-tag)
       (*PI* *preorder* . ,sxslt-drop)
@@ -48,8 +49,8 @@
       (,(db "quote") *preorder* . ,(lambda (tag . rest)
            (set! inquote? (not inquote?))
            (let ((in (pre-post-order rest conv-map))
-                 (bq `(lang ,(if inquote? "startquote" "nestedstartquote")))
-                 (eq `(lang ,(if inquote? "endquote" "nestedendquote"))))
+                 (bq (lang (if inquote? "startquote" "nestedstartquote")))
+                 (eq (lang (if inquote? "endquote" "nestedendquote"))))
              (set! inquote? (not inquote?))
              (list bq in eq))))
       ))
