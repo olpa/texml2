@@ -20,6 +20,9 @@
   (and (not (null? kids)) (memq opt (car kids))))
 
 (define (texml-serialize doc cout)
+  (define (nl-unless opt opts)
+    (or (texml-wr-has-option? opt opts)
+      (cout 'weak-nl)))
   (letrec ((st `(
       (texml . ,sxslt-id)
       (cmd *preorder* . ,(lambda (cmd-tag cmd-name . rest)
@@ -27,23 +30,19 @@
                            (if (null? rest)
                              (cout "{}")
                              (pre-post-order rest st))
-                           (if (texml-wr-has-option? 'nonl2 rest)
-                             #f
-                             (cout 'weak-nl))))
+                           (nl-unless 'nonl2 rest)))
       (gr *preorder* . ,(lambda (gr-tag . rest)
                           (cout #\{)
                           (pre-post-order rest st)
                           (cout #\})))
       (env *preorder* . ,(lambda (env-tag env-name . rest)
-                          (cout 'weak-nl "\\begin{" env-name #\})
-                          (if (texml-wr-has-option? 'nonl2 rest)
-                             #f
-                             (cout 'weak-nl))
+                          (nl-unless 'nonl1 rest)
+                          (cout "\\begin{" env-name #\})
+                          (nl-unless 'nonl2 rest)
                           (pre-post-order rest st)
-                          (if (texml-wr-has-option? 'nonl3 rest)
-                            #f
-                            (cout 'weak-nl))
-                          (cout "\\end{" env-name #\} 'weak-nl)))
+                          (nl-unless 'nonl3 rest)
+                          (cout "\\end{" env-name #\})
+                          (nl-unless 'nonl4 rest)))
       (*text* . ,(lambda (dummy s) (cout s)))
       (wr *preorder* . ,(lambda dummy #f))
       (*default* *preorder* . ,(lambda args
