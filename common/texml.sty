@@ -14,6 +14,13 @@
 \let\command=\texttt
 \let\uri=\texttt
 
+\newenvironment{variablelist}{\addvspace{2mm}}{\addvspace{2mm}}
+\newenvironment{varlistentry}{}{}
+\newcommand\term[1]{#1\par\nobreak}
+\newenvironment{varlistitem}{\advance\leftskip by 5mm\relax}{}
+%\newenvironment{varlistitem}{\advance\leftskip by 5mm\relax}{\advance\leftskip by -5mm\relax}
+%\newenvironment{varlistitem}{}{}
+
 % <copy-paste> from ltugboat.cls
 \DeclareRobustCommand\SMC{%
   \ifx\@currsize\normalsize\small\else
@@ -38,6 +45,9 @@
 
 \usepackage{fontspec}
 \setmainfont{TeX Gyre Termes}
+
+\parskip=2mm plus1mm minus1mm\relax
+\parindent=0mm
 
 % =========================================================
 % End of the normal TeX syntax

@@ -32,6 +32,12 @@
       (,(db "releaseinfo") . ,sxslt-drop)
       (,(db "para")        . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
       (,(db "programlisting")       . ,(lambda (tag . rest) `(env "programlisting" (wr nonl2 nonl3) ,@rest)))
+      (,(db "variablelist")  . ,(lambda (tag . rest) `(env "variablelist" ,@rest)))
+      (,(db "varlistentry") (
+	  (,(db "listitem")  . ,(lambda (tag . rest) `(env "varlistitem" (wr nonl1 nonl2 nonl3 nonl4) ,@rest)))
+	  )
+        . ,(lambda (tag . rest) `(env "varlistentry" (wr nonl2 nonl3) ,@rest)))
+      (,(db "term")        . ,(lambda (tag . rest) `(cmd "term" (wr nonl2) (gr ,@rest))))
       (,(db "indexterm") *preorder* . ,sxslt-drop)
       ,(direct-map-inline "tag"       "tag")
       ,(direct-map-inline "acronym"   "acronym")
