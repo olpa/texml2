@@ -2,6 +2,7 @@
 
 \usepackage{xcolor}
 \usepackage{alltt}
+\usepackage{cals}
 
 \newenvironment{para}{\ignorespaces}{\par\ignorespaces}
 \newcommand{\TODO}[1]{\begin{para}\textbf{\textcolor{red}{TODO} #1}\end{para}}
@@ -14,12 +15,25 @@
 \let\command=\texttt
 \let\uri=\texttt
 
-\newenvironment{variablelist}{\addvspace{2mm}}{\addvspace{2mm}}
+\newcommand\BeginDisplay{\addvspace{2mm}}
+\newcommand\EndDisplay{\addvspace{2mm}}
+
+\newenvironment{variablelist}{\BeginDisplay}{\EndDisplay}
 \newenvironment{varlistentry}{}{}
 \newcommand\term[1]{#1\par\nobreak}
 \newenvironment{varlistitem}{\advance\leftskip by 5mm\relax}{}
-%\newenvironment{varlistitem}{\advance\leftskip by 5mm\relax}{\advance\leftskip by -5mm\relax}
-%\newenvironment{varlistitem}{}{}
+
+\newcommand\note[1]{\BeginDisplay\vbox{}%
+\begin{calstable}
+\dimen0=\hsize \advance\hsize by -1cm\relax
+\edef\next{\noexpand\colwidths{{1cm}{\the\dimen0}}}\next
+\def\cals@paddingT{0pt}\def\cals@paddingB{0pt}\def\cals@paddingD{-10000pt}%
+\brow
+\alignC\cell{\huge !}
+\alignL\cell{#1}\erow
+\end{calstable}
+\EndDisplay
+}
 
 % <copy-paste> from ltugboat.cls
 \DeclareRobustCommand\SMC{%

@@ -31,6 +31,7 @@
       (,(db "pubdate")     . ,sxslt-drop)
       (,(db "releaseinfo") . ,sxslt-drop)
       (,(db "para")        . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
+      (,(db "note")        . ,(lambda (tag . rest) `(cmd "note" (gr ,@rest))))
       (,(db "programlisting")       . ,(lambda (tag . rest) `(env "programlisting" (wr nonl2 nonl3) ,@rest)))
       (,(db "variablelist")  . ,(lambda (tag . rest) `(env "variablelist" ,@rest)))
       (,(db "varlistentry") (
