@@ -35,6 +35,15 @@
 \EndDisplay
 }
 
+% The driver DVIPDFMx is assumed
+% #1 is supposed to be correctly PDF-encoded
+\newcommand\href[2]{%
+\special{pdf:bann <</Type /Annot /Subtype /Link /BS
+  <</Type /Border /W 0.5 /S /S>> /A <</S /URI
+    /URI (#1)>> >>}%
+#2\special{pdf:eann}}
+
+
 % <copy-paste> from ltugboat.cls
 \DeclareRobustCommand\SMC{%
   \ifx\@currsize\normalsize\small\else

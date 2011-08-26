@@ -27,6 +27,14 @@
       (,(db "section") (
           (,(db "title") . ,(lambda (tag . rest) `(cmd "section" (gr ,@rest))))
           )                . ,sxslt-flatten)
+      (,(db "link") (
+          (@ . ,sxslt-flatten)
+          (http://www.w3.org/1999/xlink:href . ,(lambda (tag . rest) (cons 'gr rest)))
+          )                . ,(lambda (tag . rest)
+             (cond
+               ((null? rest)       )
+               ((null? (cdr rest)) `(cmd "href" (wr nonl2) (gr ) (gr ,@rest)))
+               (else               `(cmd "href" (wr nonl2) ,(car rest) (gr ,@(cdr rest)))))))
       (,(db "info")        . ,sxslt-flatten)
       (,(db "pubdate")     . ,sxslt-drop)
       (,(db "releaseinfo") . ,sxslt-drop)
@@ -35,8 +43,8 @@
       (,(db "programlisting")       . ,(lambda (tag . rest) `(env "programlisting" (wr nonl2 nonl3) ,@rest)))
       (,(db "variablelist")  . ,(lambda (tag . rest) `(env "variablelist" ,@rest)))
       (,(db "varlistentry") (
-	  (,(db "listitem")  . ,(lambda (tag . rest) `(env "varlistitem" (wr nonl1 nonl2 nonl3 nonl4) ,@rest)))
-	  )
+                             (,(db "listitem")  . ,(lambda (tag . rest) `(env "varlistitem" (wr nonl1 nonl2 nonl3 nonl4) ,@rest)))
+                             )
         . ,(lambda (tag . rest) `(env "varlistentry" (wr nonl2 nonl3) ,@rest)))
       (,(db "term")        . ,(lambda (tag . rest) `(cmd "term" (wr nonl2) (gr ,@rest))))
       (,(db "indexterm") *preorder* . ,sxslt-drop)
