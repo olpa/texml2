@@ -71,3 +71,13 @@
       ))
   (pre-post-order doc conv-map)
   )
+
+(define tag-drops-xml-space?
+  (let ((drop-list (map db (list "chapter" "info" "section" "itemizedlist" "listitem" "variablelist" "varlistentry" "note"))))
+    (lambda (elem-gi)
+      (let ((full-gi (if (pair? elem-gi)
+                      (string->symbol (string-append
+                                        (symbol->string (car elem-gi)) ":"
+                                        (symbol->string (cdr elem-gi))))
+                      elem-gi)))
+        (memq full-gi drop-list)))))
