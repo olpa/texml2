@@ -640,7 +640,7 @@
                    '())
                  FINISH-ELEMENT
                  (lambda (elem-gi attributes namespaces parent-seed seed)
-                   (let ((seed (ssax:reverse-collect-str-drop-ws seed))
+                   (let ((seed ((if (tag-drops-xml-space? elem-gi) ssax:reverse-collect-str-drop-ws ssax:reverse-collect-str) seed))
                          (attrs
                           (attlist-fold
                             (lambda (attr accum)
