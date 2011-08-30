@@ -8,7 +8,11 @@
 \newcommand{\TODO}[1]{\begin{para}\textbf{\textcolor{red}{TODO} #1}\end{para}}
 \newcommand{\ERROR}[1]{\textcolor{red}{#1}}
 
-\newenvironment{programlisting}{\begin{alltt}}{\end{alltt}}
+\newenvironment{programlisting}{\@minipagetrue\begin{alltt}}{\nobreak\end{alltt}}
+\newenvironment{example}{\BeginDisplay}{\EndDisplay}
+\newcommand\txcaption[2]{\nobreak\nointerlineskip\nobreak\vskip-\parskip\relax\nobreak
+{\advance\leftskip by 2.5cm\relax \itshape
+\noindent\hbox to 0mm{\hskip-2.5cm#1\hfil}#2 \par}}
 
 \let\tag=\texttt
 \let\firstterm=\textit

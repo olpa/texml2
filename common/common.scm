@@ -62,6 +62,11 @@
             `(cmd "biblioref" (wr nonl2) (gr ,bibref)))))
       (,(db "phrase")        . ,sxslt-flatten)
       (,(db "xref") *preorder*  . ,(lambda args "(TODO-xref)"))
+      (,(db "example") *preorder* . ,(lambda (tag . rest)
+          (let* ((title "")
+                 (title-conv-map (cons (cons (db "title") (lambda (tag . rest) (set! title rest) '())) conv-map))
+                 (title-rest (pre-post-order rest title-conv-map)))
+            `(env "example" ,@title-rest (cmd "txcaption" (gr ,(lang "Example") " NN") (gr ,@title))))))
       (,(db "itemizedlist") (
           (@ (
             (*default* . ,sxslt-drop)
@@ -91,7 +96,7 @@
   )
 
 (define tag-drops-xml-space?
-  (let ((drop-list (map db (list "chapter" "info" "section" "itemizedlist" "listitem" "variablelist" "varlistentry" "note"))))
+  (let ((drop-list (map db (list "chapter" "info" "section" "itemizedlist" "listitem" "variablelist" "varlistentry" "note" "example"))))
     (lambda (elem-gi)
       (let ((full-gi (if (pair? elem-gi)
                       (string->symbol (string-append
