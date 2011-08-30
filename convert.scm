@@ -4,6 +4,7 @@
 (load (string-append ssax-sxml "/libs/input-parse.scm"))
 (load (string-append ssax-sxml "/libs/srfi-13-local.scm"))
 (load (string-append ssax-sxml "/libs/look-for-str.scm"))
+(load (string-append ssax-sxml "/libs/util.scm"))
 (load (string-append ssax-sxml "/ssax/char-encoding.scm"))
 (load (string-append ssax-sxml "/ssax/SSAX-code.scm"))
 (load (string-append ssax-sxml "/ssax/SXML-tree-trans.scm"))
@@ -12,6 +13,7 @@
 (load (string-append ssax-sxml "/sxml-tools/sxpathlib.scm"))
 (load (string-append ssax-sxml "/sxml-tools/sxpath-ext.scm"))
 (load (string-append ssax-sxml "/sxml-tools/txpath.scm"))
+(load (string-append ssax-sxml "/sxml-tools/sxml-tools.scm"))
 
 (load "common/common.scm")
 (load "common/xinclude.scm")
