@@ -6,8 +6,8 @@
   (string->symbol (string-append "http://docbook.org/ns/docbook:" tagname)))
 
 (define (direct-map-inline xml-tag tex-command)
-  (cons (db xml-tag)
-        (lambda (tag . rest) `(cmd ,tex-command (wr nonl2) (gr ,@rest)))))
+  `(,(db xml-tag) ((@ *preorder* . ,sxslt-drop)) .
+        ,(lambda (tag . rest) `(cmd ,tex-command (wr nonl2) (gr ,@rest)))))
 (define (sxslt-unknown-tag tag . rest)
   (display (string-append "*** Unprocessed tag: "
                           (symbol->string tag) "\n") (current-error-port))
@@ -57,6 +57,9 @@
       ,(direct-map-inline "replaceable" "replaceable")
       ,(direct-map-inline "citetitle" "citetitle")
       ,(direct-map-inline "remark"    "remark")
+      ,(direct-map-inline "emphasis"  "emph")
+      ,(direct-map-inline "code"  "code")
+      (,(db "glossterm") . ,(lambda (tag . rest) rest))
       (,(db "biblioref") *preorder* . ,(lambda self
           (let ((bibref (or (sxml:attr-u self 'linkend) "?")))
             `(cmd "biblioref" (wr nonl2) (gr ,bibref)))))
