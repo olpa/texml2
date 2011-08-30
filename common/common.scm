@@ -55,6 +55,10 @@
       ,(direct-map-inline "command"   "command")
       ,(direct-map-inline "uri"       "uri")
       ,(direct-map-inline "replaceable" "replaceable")
+      ,(direct-map-inline "citetitle" "citetitle")
+      (,(db "biblioref") *preorder* . ,(lambda self
+          (let ((bibref (or (sxml:attr-u self 'linkend) "?")))
+            `(cmd "biblioref" (wr nonl2) (gr ,bibref)))))
       (,(db "phrase")        . ,sxslt-flatten)
       (,(db "xref") *preorder*  . ,(lambda args "(TODO-xref)"))
       (,(db "itemizedlist") (
