@@ -39,6 +39,7 @@
       (,(db "pubdate")     . ,sxslt-drop)
       (,(db "releaseinfo") . ,sxslt-drop)
       (,(db "para")        . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
+      (,(db "simpara")     . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
       (,(db "note")        . ,(lambda (tag . rest) `(cmd "note" (gr ,@rest))))
       (,(db "programlisting")       . ,(lambda (tag . rest) `(env "programlisting" (wr nonl2 nonl3) ,@rest)))
       (,(db "variablelist")  . ,(lambda (tag . rest) `(env "variablelist" ,@rest)))
@@ -55,6 +56,17 @@
       ,(direct-map-inline "uri"       "uri")
       (,(db "phrase")        . ,sxslt-flatten)
       (,(db "xref") *preorder*  . ,(lambda args "(TODO-xref)"))
+      (,(db "itemizedlist") (
+          (@ (
+            (*default* . ,sxslt-drop)
+            (spacing . ,(lambda (tag val) (if (string=? "compact" (car val))
+                                             '(cmd "CompactVspace"))))
+            ) . ,sxslt-flatten)
+          (,(db "listitem") . ,(lambda (tag . rest)
+                                 `(env "listitem" (wr nonl2 nonl3) (gr (cmd "tbullet" (wr nonl2))) ,@rest)))
+          )
+                            . ,(lambda (tag . rest)
+                                 `(env "itemizedlist" ,@rest)))
       (*TOP* . ,(lambda (tag . rest)
           `(texml
              (cmd "documentclass" (gr "book"))

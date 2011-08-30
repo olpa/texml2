@@ -35,6 +35,15 @@
 \EndDisplay
 }
 
+\newcommand\tbullet{$\bullet$}
+\newcommand\tx@FirstParaAction[1]{\everypar={#1\everypar={}}}
+
+\newenvironment{itemizedlist}{\BeginDisplay}{\EndDisplay}
+\newcommand\CompactVspace{\parskip=0pt \relax}
+\newenvironment{listitem}[1]{%
+\tx@FirstParaAction{\hbox to 0pt{\hskip-5mm \hfil #1 \hskip1.5mm minus1.5mm}}%
+\advance\leftskip5mm\relax}{}
+
 % The driver DVIPDFMx is assumed
 % #1 is supposed to be correctly PDF-encoded
 \newcommand\href[2]{%
