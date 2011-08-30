@@ -54,6 +54,7 @@
       ,(direct-map-inline "firstterm" "firstterm")
       ,(direct-map-inline "command"   "command")
       ,(direct-map-inline "uri"       "uri")
+      ,(direct-map-inline "replaceable" "replaceable")
       (,(db "phrase")        . ,sxslt-flatten)
       (,(db "xref") *preorder*  . ,(lambda args "(TODO-xref)"))
       (,(db "itemizedlist") (
