@@ -13,6 +13,21 @@
                           (symbol->string tag) "\n") (current-error-port))
   `(cmd "TODO" (gr ,(symbol->string tag))))
 
+(define (get-list-convmap)
+  (define list-attr-convmap `(@ (
+            (*default* . ,sxslt-drop)
+            (spacing . ,(lambda (tag val) (if (string=? "compact" (car val))
+                                             '(cmd "CompactVspace"))))
+            ) . ,sxslt-flatten))
+  (define (mk-listitem numbering) `(,(db "listitem") .
+      ,(lambda (tag . rest)
+         `(env "listitem" (wr nonl2 nonl3) (gr ,numbering) ,@rest))))
+  `((,(db "itemizedlist") (
+      ,list-attr-convmap
+      ,(mk-listitem '(cmd "tbullet" (wr nonl2)))
+      ) . ,(lambda (tag . rest) `(env "itemizedlist" ,@rest))))
+)
+
 (define (common-transform doc)
   (define inquote? #f) ; #f=level0,2,4... #t=level1,3,5...
   (define (lang key) (gentext default-language key))
@@ -70,17 +85,7 @@
                  (title-conv-map (cons (cons (db "title") (lambda (tag . rest) (set! title rest) '())) conv-map))
                  (title-rest (pre-post-order rest title-conv-map)))
             `(env "example" ,@title-rest (cmd "txcaption" (gr ,(lang "Example") " NN") (gr ,@title))))))
-      (,(db "itemizedlist") (
-          (@ (
-            (*default* . ,sxslt-drop)
-            (spacing . ,(lambda (tag val) (if (string=? "compact" (car val))
-                                             '(cmd "CompactVspace"))))
-            ) . ,sxslt-flatten)
-          (,(db "listitem") . ,(lambda (tag . rest)
-                                 `(env "listitem" (wr nonl2 nonl3) (gr (cmd "tbullet" (wr nonl2))) ,@rest)))
-          )
-                            . ,(lambda (tag . rest)
-                                 `(env "itemizedlist" ,@rest)))
+      ,@(get-list-convmap)
       (*TOP* . ,(lambda (tag . rest)
           `(texml
              (cmd "documentclass" (gr "book"))
