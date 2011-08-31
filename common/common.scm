@@ -25,7 +25,13 @@
   `((,(db "itemizedlist") (
       ,list-attr-convmap
       ,(mk-listitem '(cmd "tbullet" (wr nonl2)))
-      ) . ,(lambda (tag . rest) `(env "itemizedlist" ,@rest))))
+      ) . ,(lambda (tag . rest) `(env "itemizedlist" ,@rest)))
+    (,(db "orderedlist") (
+      ,list-attr-convmap
+      ,(mk-listitem '(cmd (counter l n +) (wr nonl2)))
+      ) . ,(lambda (tag . rest)
+        `((counter l #\space push) (counter l #\space = 0) (env "itemizedlist" ,@rest) (counter l #\space pop))))
+  )
 )
 
 (define (common-transform doc)
@@ -104,7 +110,7 @@
   )
 
 (define tag-drops-xml-space?
-  (let ((drop-list (map db (list "chapter" "info" "section" "itemizedlist" "listitem" "variablelist" "varlistentry" "note" "example"))))
+  (let ((drop-list (map db (list "chapter" "info" "section" "itemizedlist" "orderedlist" "listitem" "variablelist" "varlistentry" "note" "example"))))
     (lambda (elem-gi)
       (let ((full-gi (if (pair? elem-gi)
                       (string->symbol (string-append
