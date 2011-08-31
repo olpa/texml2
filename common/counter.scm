@@ -15,3 +15,16 @@
 ;        - = arg: set the value of the counter to arg
 ;        - + {arg}: increment the value of the counter, default is 1
 
+(define (fix-counters! tree)
+  (let loop ((this-level tree) (parents '()))
+    (if (null? this-level)
+      (if (null? parents)
+        #t
+        (loop (cdar parents) (cdr parents)))
+      (if (pair? (car this-level))
+        (if (eq? (caar this-level) 'tx:counter)
+          (begin
+            (set-car! (car this-level) 'cccounter)
+            (loop (cdr this-level) parents))
+          (loop (car this-level) (cons this-level parents)))
+        (loop (cdr this-level) parents)))))
