@@ -40,9 +40,8 @@
                         (set-car! baton (cons new-pair (car baton)))
                         new-pair))))
         )
-    (pp cnt-node)(pp baton)
     (case action
-      ((=)   (set-cdr! cnt-pair (car rest)))
+      ((=)   (set-cdr! cnt-pair (if (null? rest) 0 (car rest))))
       ((+)   (set-cdr! cnt-pair (+ (cdr cnt-pair)
                                    (if (null? rest) 1 (car rest)))))
       ; push/pop are balanced, no need for an associative map
