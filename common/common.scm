@@ -28,9 +28,9 @@
       ) . ,(lambda (tag . rest) `(env "itemizedlist" ,@rest)))
     (,(db "orderedlist") (
       ,list-attr-convmap
-      ,(mk-listitem '(cmd (counter l n +) (wr nonl2)))
+      ,(mk-listitem '(tx:counter l n +))
       ) . ,(lambda (tag . rest)
-        `((counter l #\space push) (counter l #\space = 0) (env "itemizedlist" ,@rest) (counter l #\space pop))))
+        `((tx:counter l #\space push) (tx:counter l #\space =) (env "itemizedlist" ,@rest) (tx:counter l #\space pop))))
   )
 )
 

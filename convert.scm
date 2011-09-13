@@ -19,6 +19,7 @@
 (load "common/xinclude.scm")
 (load "common/texml.scm")
 (load "common/lang.scm")
+(load "common/counter.scm")
 
 (define xml-file (cadr (member "--xml" (command-line))))
 (define tex-file (cadr (member "--tex" (command-line))))
@@ -28,6 +29,7 @@
 (load-languages '())
 (define texml (common-transform doc))
 ;(pp texml (current-output-port))
+(fix-counters! texml)
 
 (define tex-port (open-output-file tex-file))
 (define tex-port-out (make-tex-output tex-port))
