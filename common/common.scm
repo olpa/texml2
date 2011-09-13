@@ -90,7 +90,7 @@
           (let* ((title "")
                  (title-conv-map (cons (cons (db "title") (lambda (tag . rest) (set! title rest) '())) conv-map))
                  (title-rest (pre-post-order rest title-conv-map)))
-            `(env "example" ,@title-rest (cmd "txcaption" (gr ,(lang "Example") " NN") (gr ,@title))))))
+            `(env "example" ,@title-rest (cmd "txcaption" (gr ,(lang "Example") " " (tx:counter e n +)) (gr ,@title))))))
       ,@(get-list-convmap)
       (*TOP* . ,(lambda (tag . rest)
           `(texml
