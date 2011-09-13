@@ -30,7 +30,7 @@
       ,list-attr-convmap
       ,(mk-listitem '(tx:counter l n +))
       ) . ,(lambda (tag . rest)
-        `((tx:counter l #\space push) (tx:counter l #\space =) (env "itemizedlist" ,@rest) (tx:counter l #\space pop))))
+        `((tx:counter l #\space push) (tx:counter l #\space =) (env "orderedlist" ,@rest) (tx:counter l #\space pop))))
   )
 )
 
