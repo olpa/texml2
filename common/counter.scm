@@ -16,6 +16,7 @@
 ;        - + {arg}: increment the value of the counter, default is 1
 
 (define (fix-counters! tree)
+  (define baton '(() ()))
   (let loop ((this-level tree) (parents '()))
     (if (null? this-level)
       (if (null? parents)
@@ -24,7 +25,19 @@
       (if (pair? (car this-level))
         (if (eq? (caar this-level) 'tx:counter)
           (begin
-            (set-car! (car this-level) 'cccounter)
+            (set-car! this-level (on-counter (car this-level) baton))
             (loop (cdr this-level) parents))
           (loop (car this-level) (cons this-level parents)))
         (loop (cdr this-level) parents)))))
+
+(define (on-counter cnt-node baton)
+  (let ((show      (caddr cnt-node))
+        (action   (cadddr cnt-node))
+        (cnt-pair (let ((pair-found (assq (cadr cnt-node) (car baton))))
+                    (or pair-found
+                      (let ((new-pair (cons (cadr cnt-node) 0)))
+                        (set-car! baton (cons new-pair (car baton)))
+                        new-pair))))
+        )
+    (pp baton)
+    '()))
