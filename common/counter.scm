@@ -33,11 +33,24 @@
 (define (on-counter cnt-node baton)
   (let ((show      (caddr cnt-node))
         (action   (cadddr cnt-node))
+        (rest     (cddddr cnt-node))
         (cnt-pair (let ((pair-found (assq (cadr cnt-node) (car baton))))
                     (or pair-found
                       (let ((new-pair (cons (cadr cnt-node) 0)))
                         (set-car! baton (cons new-pair (car baton)))
                         new-pair))))
         )
-    (pp baton)
-    '()))
+    (pp cnt-node)(pp baton)
+    (case action
+      ((=)   (set-cdr! cnt-pair (car rest)))
+      ((+)   (set-cdr! cnt-pair (+ (cdr cnt-pair)
+                                   (if (null? rest) 1 (car rest)))))
+      ; push/pop are balanced, no need for an associative map
+      ((push) (set-car! (cdr baton) (cons (cdr cnt-pair) (cadr baton))))
+      ((pop)  (set-cdr! cnt-pair    (caadr baton))
+              (set-car! (cdr baton) (cdadr baton)))
+      (else  (cerr "*** counter fix, unknown action: " action #\newline)))
+    ; show modifications are not supported yet
+    (if (eq? #\space show)
+      '()
+      (cdr cnt-pair))))
