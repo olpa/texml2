@@ -59,6 +59,8 @@
       (,(db "info")        . ,sxslt-flatten)
       (,(db "pubdate")     . ,sxslt-drop)
       (,(db "releaseinfo") . ,sxslt-drop)
+      (,(db "table")       . ,sxslt-flatten)
+      (,(db "tgroup") *preorder* . ,(lambda node (convert-table node conv-map)))
       (,(db "para")        . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
       (,(db "simpara")     . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
       (,(db "note")        . ,(lambda (tag . rest) `(cmd "note" (gr ,@rest))))
@@ -79,7 +81,8 @@
       ,(direct-map-inline "citetitle" "citetitle")
       ,(direct-map-inline "remark"    "remark")
       ,(direct-map-inline "emphasis"  "emph")
-      ,(direct-map-inline "code"  "code")
+      ,(direct-map-inline "code"      "code")
+      ,(direct-map-inline "computeroutput"  "computeroutput")
       (,(db "glossterm") . ,(lambda (tag . rest) rest))
       (,(db "biblioref") *preorder* . ,(lambda self
           (let ((bibref (or (sxml:attr-u self 'linkend) "?")))
@@ -110,7 +113,7 @@
   )
 
 (define tag-drops-xml-space?
-  (let ((drop-list (map db (list "chapter" "info" "section" "itemizedlist" "orderedlist" "listitem" "variablelist" "varlistentry" "note" "example"))))
+  (let ((drop-list (map db (list "chapter" "info" "section" "itemizedlist" "orderedlist" "listitem" "variablelist" "varlistentry" "note" "example" "table" "tgroup" "thead" "tbody" "tfoot" "row"))))
     (lambda (elem-gi)
       (let ((full-gi (if (pair? elem-gi)
                       (string->symbol (string-append
