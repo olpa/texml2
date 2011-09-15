@@ -1,8 +1,3 @@
-; converting tables
-(define (cerr . lst)
-  (map (lambda (obj) (display obj)) lst)
-  (newline))
-
 ; some generic parameters are required
 (define (convert-table tgroup-node conv-map)
   (pre-post-order tgroup-node `(
@@ -18,11 +13,9 @@
 ;
 
 ;
-; returns (fixed_width, proportion_sum, percent_sum)
+; returns (fixed_width_value, fixed_width_units, proportion_sum, percent_sum)
 ; for example:
-; "3pt+10%+*"  ==> '("3pt" 1 10)
-;
-;(define (parse-colspec-string s)
+; "3Pt + 10% + *"  ==> '("3" "pt" 1 10)
 ;
 ;http://www.oasis-open.org/specs/a502.htm
 ;COLWIDTH: Either proportional measure of the form number*, i.e., "5*" for 5 times the proportion, or "*" (which is equivalent to "1*"); fixed measure, i.e., 2pt for 2 point, 3pi for 3 pica; or mixed measure, i.e., 2*+3pt. Coefficients are positive integers or fixed point numbers.
@@ -33,61 +26,59 @@
 ; correct strings are parsed correctly. For the rest:
 ; garbage in -- garbage out.
 (define (parse-colspec-string s)
-  (call-with-current-continuation (lambda (func-exit)
-    (let* ((default-result    '(#f #f 1 #f))
-           (chars-value       #f)
-           (chars-units       #f)
-           (fixed-value       #f)
-           (fixed-units       #f)
-           (percent-value     #f)
-           (proportion-value  #f)
-           (parse-error       (lambda ls
-                                (apply cerr ls)
-                                (func-exit default-result)))
-           (reset-value       (lambda ()
-                                (set! chars-value '())
-                                (set! chars-units '())))
-           (fix-current-value (lambda ()
-              (if (not (null? chars-value))
-                (begin
-                  (set! fixed-value (list->string (reverse chars-value)))
-                  (set! fixed-units (if (null? chars-units)
-                          "pt"
-                          (list->string (reverse chars-units))))))))
-           )
-      (reset-value)
-      (let loop ((rest (string->list s)))
-        (if (null? rest)
-          (begin
-            (fix-current-value)
-            (list fixed-value fixed-units proportion-value percent-value))
-          (let ((ch (car rest)))
-            (cond
-              ((char-numeric? ch)    (set! chars-value (cons ch chars-value)))
-              ((char-lower-case? ch) (set! chars-units (cons ch chars-units)))
-              ((char-upper-case? ch) (set! chars-units
-                                       (cons (char-downcase ch) chars-units)))
-              ((eqv? #\+ ch)         (fix-current-value)
-                                     (reset-value))
-              ((or (eqv? #\. ch) (eqv? #\, ch))
-                      (cond
-                        ((null? chars-value)  (set! chars-value '(#\0 #\.)))
-                        ((memv #\. chars-value) )
-                        (else  (set! chars-value (cons #\. chars-value)))))
-              ((eqv? #\* ch)
-                      (set! proportion-value
-                        (if (null? chars-value)
-                          1
-                          (string->number (list->string
-                                            (reverse chars-value)))))
-                      (reset-value))
-              ((eqv? #\% ch)
-                      (if (not (null? chars-value))
-                        (set! percent-value (string->number
-                                (list->string (reverse chars-value)))))
-                      (reset-value))
-              )
-            (loop (cdr rest))))))
-      )))
+  (let* ((default-result    '(#f #f 1 #f))
+         (chars-value       #f)
+         (chars-units       #f)
+         (fixed-value       #f)
+         (fixed-units       #f)
+         (percent-value     #f)
+         (proportion-value  #f)
+         (parse-error       (lambda ls
+                              (apply cerr ls)
+                              (func-exit default-result)))
+         (reset-value       (lambda ()
+                              (set! chars-value '())
+                              (set! chars-units '())))
+         (fix-current-value (lambda ()
+            (if (not (null? chars-value))
+              (begin
+                (set! fixed-value (list->string (reverse chars-value)))
+                (set! fixed-units (if (null? chars-units)
+                        "pt"
+                        (list->string (reverse chars-units))))))))
+         )
+    (reset-value)
+    (let loop ((rest (string->list s)))
+      (if (null? rest)
+        (begin
+          (fix-current-value)
+          (list fixed-value fixed-units proportion-value percent-value))
+        (let ((ch (car rest)))
+          (cond
+            ((char-numeric? ch)    (set! chars-value (cons ch chars-value)))
+            ((char-lower-case? ch) (set! chars-units (cons ch chars-units)))
+            ((char-upper-case? ch) (set! chars-units
+                                     (cons (char-downcase ch) chars-units)))
+            ((eqv? #\+ ch)         (fix-current-value)
+                                   (reset-value))
+            ((or (eqv? #\. ch) (eqv? #\, ch))
+                    (cond
+                      ((null? chars-value)  (set! chars-value '(#\0 #\.)))
+                      ((memv #\. chars-value) )
+                      (else  (set! chars-value (cons #\. chars-value)))))
+            ((eqv? #\* ch)
+                    (set! proportion-value
+                      (if (null? chars-value)
+                        1
+                        (string->number (list->string
+                                          (reverse chars-value)))))
+                    (reset-value))
+            ((eqv? #\% ch)
+                    (if (not (null? chars-value))
+                      (set! percent-value (string->number
+                              (list->string (reverse chars-value)))))
+                    (reset-value))
+            )
+          (loop (cdr rest)))))))
 
 ;(pp (parse-colspec-string "2 3 C m + 2..5* +  7%%%"))
