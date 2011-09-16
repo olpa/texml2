@@ -1,12 +1,30 @@
 ; some generic parameters are required
 (define (convert-table tgroup-node conv-map)
-  (pre-post-order tgroup-node `(
-      (,(db "tgroup") . ,(lambda (_ . kids) `(env calstable ,@kids)))
+  (define convmap-ref)
+  (define convmap `(
+      (,(db "tgroup") *preorder* . ,(lambda node
+              ; FIXME: very fragile
+              (let* ((ncols (sxml:number
+                              ((car-sxpath '(@ cols *text*)) node)))
+                     (colwidths
+                       (let loop ((i ncols) (cws '()))
+                         (if (= 0 i)
+                           cws
+                           (loop
+                             (- i 1)
+                             ; colspec[@colnum=i]/@colwidth
+                             ;(parse-colspec-string (sxml:string (id-pp ((sxpath (id-pp `((,(db "colspec") (@ (equal? (colnum 2)))) ))) node))))
+                             (parse-colspec-string (sxml:string (id-pp ((sxpath (id-pp `((,(db "colspec") (@ (equal? (colnum ,(number->string i))))) @ colwidth))) node))))
+                             ))))
+                     )
+                  `(env calstable ,@(pre-post-order (cdr node) convmap-ref)))))
       (,(db "thead")  . ,(lambda (_ . kids) `(env thead ,@kids)))
       (,(db "tbody")  . ,(lambda (_ . kids) kids))
       (,(db "row")    . ,(lambda (_ . kids) `((cmd brow (wr nogr)) ,@kids (cmd erow (wr nogr)))))
       (,(db "entry")  . ,(lambda (_ . kids) `(cmd cell (gr ,@kids))))
-      ,@conv-map)))
+      ,@conv-map))
+  (set! convmap-ref convmap)
+  (pre-post-order tgroup-node convmap))
 
 ;
 ; colspec
