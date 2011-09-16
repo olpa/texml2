@@ -22,6 +22,10 @@
 (load "common/counter.scm")
 (load "common/table.scm")
 
+(define (id-pp obj)
+  (display "*** id-pp: " (current-output-port))(pp obj (current-output-port))
+  obj)
+
 (define xml-file (cadr (member "--xml" (command-line))))
 (define tex-file (cadr (member "--tex" (command-line))))
 (define doc (SSAX:XML->SXML (open-input-file xml-file) '()))
