@@ -12,11 +12,15 @@
                            cws
                            (loop
                              (- i 1)
-                             ; colspec[@colnum=i]/@colwidth
-                             ;(parse-colspec-string (sxml:string (id-pp ((sxpath (id-pp `((,(db "colspec") (@ (equal? (colnum 2)))) ))) node))))
-                             (parse-colspec-string (sxml:string (id-pp ((sxpath (id-pp `((,(db "colspec") (@ (equal? (colnum ,(number->string i))))) @ colwidth))) node))))
-                             ))))
+                             (cons
+                               ; colspec[@colnum=i]/@colwidth
+                               (parse-colspec-string (sxml:string ((sxpath
+                                 `((,(db "colspec")
+                                     (@ (equal? (colnum ,(number->string i)))))
+                                   @ colwidth)) node)))
+                               cws)))))
                      )
+                  (pp colwidths)
                   `(env calstable ,@(pre-post-order (cdr node) convmap-ref)))))
       (,(db "thead")  . ,(lambda (_ . kids) `(env thead ,@kids)))
       (,(db "tbody")  . ,(lambda (_ . kids) kids))
