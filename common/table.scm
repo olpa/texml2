@@ -74,7 +74,9 @@
       (if (null? rest)
         (begin
           (fix-current-value)
-          (list fixed-value fixed-units proportion-value percent-value))
+          (if (or fixed-value proportion-value percent-value)
+            (list fixed-value fixed-units proportion-value percent-value)
+            default-result))
         (let ((ch (car rest)))
           (cond
             ((char-numeric? ch)    (set! chars-value (cons ch chars-value)))
