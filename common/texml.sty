@@ -65,6 +65,34 @@
     /URI (#1)>> >>}%
 #2\special{pdf:eann}}
 
+%
+% Mixed widths to fixed 
+%
+\newcommand\TxColwidths[1]{\begingroup
+\def\nextII##1{\ifx\relax##1\let\next=\relax \else
+  \LoopPre ##1\LoopPost \fi\next}%
+% First pass: collect the proportion units
+\dimen0=\hsize\relax % rest width
+\count0=0\relax      % N of proportions
+\def\w##1{\advance\dimen0 by -##1\relax}%
+\def\p##1{\advance\count0 by ##1\relax}
+\let\LoopPre=\relax
+\let\LoopPost=\relax
+\let\next=\nextII  \next#1\relax
+\ifnum\count0=0\relax \else \divide\dimen0 by \count0\relax\fi
+% Second pass:construct the colwidths
+\def\w##1{\advance\dimen2 by ##1\relax}%
+\def\p##1{\advance\dimen2 by ##1\dimen0\relax}%
+\def\nextIII{}%
+\def\LoopPre{\dimen2=0pt\relax}%
+\def\LoopPost{\edef\nextIII{\nextIII{\the\dimen2}}}%
+\let\next=\nextII  \next#1\relax
+\global\let\next=\nextIII
+\endgroup
+\colwidths{\next}}
+
+% =========================================================
+
 % <copy-paste> from ltugboat.cls
 \DeclareRobustCommand\SMC{%
   \ifx\@currsize\normalsize\small\else
