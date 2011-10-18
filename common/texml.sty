@@ -9,6 +9,7 @@
 \newcommand{\ERROR}[1]{\textcolor{red}{#1}}
 
 \newenvironment{programlisting}{\@minipagetrue\begin{alltt}}{\nobreak\end{alltt}}
+\newenvironment{screen}{\BeginDisplay\@minipagetrue\begin{alltt}}{\nobreak\end{alltt}\EndDisplay}
 \newenvironment{example}{\BeginDisplay}{\EndDisplay}
 \newcommand\txcaption[2]{\nobreak\nointerlineskip\nobreak\vskip-\parskip\relax\nobreak
 {\advance\leftskip by 2.5cm\relax \itshape
@@ -21,6 +22,8 @@
 \let\command=\texttt
 \let\uri=\texttt
 \let\code=\texttt
+\let\literal=\texttt
+\let\filename=\texttt
 \let\computeroutput=\texttt
 
 \newcommand\biblioref[1]{\textit{[#1]}}
