@@ -2,6 +2,14 @@
 (define sxslt-flatten  (lambda (tag . args) args))
 (define sxslt-drop     (lambda args '()))
 
+(define (car-sxpath-or-default path default)
+  (let ((sx (sxpath path)))
+    (lambda (node)
+      (let ((ret (sx node)))
+        (if (null? ret)
+          default
+          (car ret))))))
+
 (define (db tagname)
   (string->symbol (string-append "http://docbook.org/ns/docbook:" tagname)))
 
@@ -63,8 +71,10 @@
       (,(db "tgroup") *preorder* . ,(lambda node (convert-table node conv-map)))
       (,(db "para")        . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
       (,(db "simpara")     . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
+      (,(db "member")      . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
       (,(db "note")        . ,(lambda (tag . rest) `(cmd "note" (gr ,@rest))))
       (,(db "programlisting")       . ,(lambda (tag . rest) `(env "programlisting" (wr nonl2 nonl3) ,@rest)))
+      (,(db "screen")       . ,(lambda (tag . rest) `(env "screen" (wr nonl2 nonl3) ,@rest)))
       (,(db "variablelist")  . ,(lambda (tag . rest) `(env "variablelist" ,@rest)))
       (,(db "varlistentry") (
                              (,(db "listitem")  . ,(lambda (tag . rest) `(env "varlistitem" (wr nonl1 nonl2 nonl3 nonl4) ,@rest)))
@@ -83,6 +93,8 @@
       ,(direct-map-inline "emphasis"  "emph")
       ,(direct-map-inline "code"      "code")
       ,(direct-map-inline "computeroutput"  "computeroutput")
+      ,(direct-map-inline "literal"   "literal")
+      ,(direct-map-inline "filename"  "filename")
       (,(db "glossterm") . ,(lambda (tag . rest) rest))
       (,(db "biblioref") *preorder* . ,(lambda self
           (let ((bibref (or (sxml:attr-u self 'linkend) "?")))
@@ -108,6 +120,14 @@
                  (eq (lang (if inquote? "endquote" "nestedendquote"))))
              (set! inquote? (not inquote?))
              (list bq in eq))))
+      (,(db "simplelist") . ,(lambda (tag . kids)
+          (let ((type ((car-sxpath-or-default '(@ type *text*) "vert") kids))
+                (columns (string->number
+                      ((car-sxpath-or-default '(@ columns *text*) "1") kids))))
+            (pp type)
+            (pp columns)
+            "TODO")))
+
       ))
   (pre-post-order doc conv-map)
   )
