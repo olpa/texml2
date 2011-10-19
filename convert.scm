@@ -15,6 +15,7 @@
 (load (string-append ssax-sxml "/sxml-tools/txpath.scm"))
 (load (string-append ssax-sxml "/sxml-tools/sxml-tools.scm"))
 
+(load "support/unsorted/convtools.scm")
 (load "common/common.scm")
 (load "common/xinclude.scm")
 (load "common/texml.scm")
