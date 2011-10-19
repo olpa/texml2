@@ -1,0 +1,1 @@
+/home/olpa/p/hp/downcast_opmanual_to_bitplant/convtools.scm
