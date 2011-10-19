@@ -42,6 +42,12 @@
   )
 )
 
+(define (simplilist->table kids type columns)
+  (if (= 1 columns)
+    (map (lambda (node) (cons node '()))
+         (nset-filter (func-is-element-is-named? 'env) kids))
+    (raise "simplilist-table, only 1 colun is supported yet")))
+
 (define (common-transform doc)
   (define inquote? #f) ; #f=level0,2,4... #t=level1,3,5...
   (define (lang key) (gentext default-language key))
@@ -71,7 +77,7 @@
       (,(db "tgroup") *preorder* . ,(lambda node (convert-table node conv-map)))
       (,(db "para")        . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
       (,(db "simpara")     . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
-      (,(db "member")      . ,(lambda (tag . rest) `(env "para" (wr nonl2 nonl3) ,@rest)))
+      (,(db "member")      . ,(lambda (tag . rest) `(env "para" (wr nonl1 nonl2 nonl3 nonl4) ,@rest)))
       (,(db "note")        . ,(lambda (tag . rest) `(cmd "note" (gr ,@rest))))
       (,(db "programlisting")       . ,(lambda (tag . rest) `(env "programlisting" (wr nonl2 nonl3) ,@rest)))
       (,(db "screen")       . ,(lambda (tag . rest) `(env "screen" (wr nonl2 nonl3) ,@rest)))
@@ -124,10 +130,18 @@
           (let ((type ((car-sxpath-or-default '(@ type *text*) "vert") kids))
                 (columns (string->number
                       ((car-sxpath-or-default '(@ columns *text*) "1") kids))))
-            (pp type)
-            (pp columns)
-            "TODO")))
-
+            (if (string=? "inline" type)
+              (raise "simplilist/@type=inline not supported")
+              `(env "simplelisttbl"
+                  (cmd "TxColwidths" (gr (gr (cmd "p" (wr nonl2) (gr "1")))))
+                  ,@(map (lambda (row)
+                      `(texml (cmd "brow")
+                      ,@(map (lambda (cell)
+                                    `(cmd "cell" (gr ,cell)))
+                                  row)
+                      (cmd "erow")))
+                    (simplilist->table kids type columns)))))))
+      ;
       ))
   (pre-post-order doc conv-map)
   )
