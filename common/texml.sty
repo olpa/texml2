@@ -96,6 +96,12 @@
 
 \newcommand\TxThead[1]{\thead{\bfseries#1\mdseries}}
 
+\newenvironment{simplelisttbl}{%
+\begin{calstable}%
+\def\cals@cs@width{0pt}%
+\def\cals@rs@width{0pt}%
+}{\end{calstable}}
+
 % =========================================================
 
 % <copy-paste> from ltugboat.cls
