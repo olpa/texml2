@@ -101,8 +101,10 @@
       ,(direct-map-inline "computeroutput"  "computeroutput")
       ,(direct-map-inline "literal"   "literal")
       ,(direct-map-inline "filename"  "filename")
+      ,(direct-map-inline "function"  "function")
       ,(direct-map-inline "subscript" "textsubscript")
       ,(direct-map-inline "superscript"  "textsuperscript")
+      ,(direct-map-inline "footnote"  "footnote")
       (,(db "glossterm") . ,(lambda (tag . rest) rest))
       (,(db "biblioref") *preorder* . ,(lambda self
           (let ((bibref (or (sxml:attr-u self 'linkend) "?")))
