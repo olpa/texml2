@@ -104,6 +104,12 @@
 
 % =========================================================
 
+% http://groups.google.de/group/comp.text.tex/msg/8112ff8779575474
+\DeclareRobustCommand*\textsubscript[1]{%
+\@textsubscript{\selectfont#1}}
+\def\@textsubscript#1{%
+{\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}} 
+
 % <copy-paste> from ltugboat.cls
 \DeclareRobustCommand\SMC{%
   \ifx\@currsize\normalsize\small\else
