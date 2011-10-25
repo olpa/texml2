@@ -1,0 +1,110 @@
+интерфейсы для генерации PDF на основе TeX-стилей.
+
+В примерах кода используется абстрактный ООП-язык.
+
+1) "Привет, мир":
+
+doc = smth()
+p = doc.get_para_style('para')
+doc.add(p('Hello, World!'))
+
+Получается:
+
+\documentclass{texml}
+\begin{document}
+\begin{para}Hello, World!\end{para}
+\end{document}
+
+Предполагается, что стиль "para" определён.
+
+2) "Привет, мир" с символьным стилем
+
+doc = smth()
+p  = doc.get_para_style('para')
+ch = doc.get_char_style('emph')
+doc.add(p('Hello, ', ch('World!')))
+
+Получается:
+
+\documentclass{texml}
+\begin{document}
+\begin{para}Hello, \emph{World!}\end{para}
+\end{document}
+
+Предполагаем, что стиль "emph" уже определён.
+
+3) Новый символьный стиль
+
+doc = sth()
+p  = doc.get_para_style('para')
+ch = doc.create_new_char_style('ColorEmph',
+  parent_style=doc.get_char_style('emph'),
+  color = 'blue')
+doc.add(p('Hello, ', ch('World!')))
+
+Получаем:
+
+\documentclass{texml}
+\newcommand[1]{\ColorEmph}{\emph{\textcolor{blue}#1}}
+\begin{document}
+\begin{para}Hello, \ColorEmph{World!}\end{para}
+\end{document}
+
+
+
+////////////////////////////
+
+\documentclass{texml}
+
+\begin{document}
+что-то
+\begin{HeaderI}Hello, World!\end{HeaderI}
+\end{docuent}
+
+* Прежполагается, что символьный стиль "Bold" определён.
+* "что-то" расписано ниже
+* Вместо "Header1" создаётся "HeaderI", т.к. цифры в TeX-командах не разрешены. Также надо придумать преобразование для пробелов и других не-ascii-букв.
+
+Стили параграфа, параметры (по мотивам FrameMaker):
+
+Basic:
+Indents: first, left, right
+Alignment: left/center/right/justified
+space: above paragraph, below
+line spacing (== baselineskip)
+tab stops: TODO продумать. Наверное, не будет сделано.
+
+Default Font:
+Family
+Size
+Angle
+weight
+Variation
+Color
+Spread
+Stretch
+Language
+Pair Kern
+Underline (+double, +numeric)
+Overline
+Strikethrough
+Change bar
+Superscript/subscript
+Small Caps/lowercase/uppercase
+pair kern
+
+Pagination:
+Start: anywhere/top of column/page/left page/right page
+keep with: next paragraph, previous paragraph
+widow/orphan lines
+format: in column, run-in-head, side head (first baseline, top edge, last baseline)
+across all columns
+across all columns and side heads
+
+Numbering:
+Autonumber format
+Character format for numbering
+Position: start of paragraph, end of paragraph
+
+
+
