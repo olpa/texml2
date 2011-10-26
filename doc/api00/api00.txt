@@ -45,11 +45,58 @@ doc.add(p('Hello, ', ch('World!')))
 Получаем:
 
 \documentclass{texml}
-\newcommand[1]{\ColorEmph}{\emph{\textcolor{blue}#1}}
+\newcommand\ColorEmph[1]{\emph{\color{blue}#1}}
 \begin{document}
 \begin{para}Hello, \ColorEmph{World!}\end{para}
 \end{document}
 
+4) преобразование в символьный стиль
+
+Вызов
+
+create_new_char_style('StyleName', options)
+
+преобразуется в
+
+\newcommand\EscapedStyleName[1]{{ConvertedOptions #1}}
+
+(Команда с одним параметром. Дополнительный уровень скобок делает изменения локальными.) Если задан родительский стиль, то тогда получится:
+
+\newcommand\EscapedStyleName[1]{\ParentStyle{ConvertedOptions #1}}
+
+Настройки:
+
+Family ==> \SwitchToFontCommand
+(семейство шрифтов -- это тоже объект, который опеределяет команду, как переключаться на шрифт. Например, \SwitchToHelvetica)
+
+Size n ==> \fontsize{n}{\baselineskip}\selectfont
+
+series code ==>  \fontseries{code}\selectfont
+shape code  ==>  \fontshape{code}\selectfont
+Пояснения и список стандартных кодов (а могут быть и нестандартные) тут (стр.5):
+http://www.latex-project.org/guides/fntguide.pdf
+
+Color c ==> \color{c}
+
+5) Семейство шрифтов
+
+Нужно уметь генерировать команду \DeclareFontShape и \DeclareFontShape (глава 4 документа "fntguide.pdf").
+
+Например, я должен уметь получать:
+
+\DeclareFontFamily{EU1}{univers}{}
+\DeclareFontShape{EU1}{univers}{m}{n}{ <-> "[UniversCom-55Roman.ttf]"}{}
+\DeclareFontShape{EU1}{univers}{m}{it}{ <-> "[UniversCom-55Oblique.ttf]"}{}
+\DeclareFontShape{EU1}{univers}{bx}{n}{ <-> "[UniversCom-65Bold.ttf]"}{}
+\DeclareFontShape{EU1}{univers}{bx}{it}{ <-> "[UniversCom-65Bold.ttf]:slant=0.2"}{}
+\DeclareFontShape{EU1}{univers}{bl}{n}{ <-> "[UniversCom-75Black.ttf]"}{}
+\DeclareErrorFont{EU1}{univers}{m}{n}{10}
+\DeclareFontSubstitution{EU1}{univers}{m}{n}
+\newcommand\UseFontUnivers{\fontfamily{univers}\selectfont}
+
+/// font name
+Spread
+Stretch
 
 
 ////////////////////////////
