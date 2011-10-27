@@ -37,7 +37,7 @@ doc.add(p('Hello, ', ch('World!')))
 
 doc = sth()
 p  = doc.get_para_style('para')
-ch = doc.create_new_char_style('ColorEmph',
+ch = doc.create_char_style('ColorEmph',
   parent_style=doc.get_char_style('emph'),
   color = 'blue')
 doc.add(p('Hello, ', ch('World!')))
@@ -54,7 +54,7 @@ doc.add(p('Hello, ', ch('World!')))
 
 Вызов
 
-create_new_char_style('StyleName', options)
+create_char_style('StyleName', options)
 
 преобразуется в
 
@@ -94,64 +94,70 @@ Color c ==> \color{c}
 \DeclareFontSubstitution{EU1}{univers}{m}{n}
 \newcommand\UseFontUnivers{\fontfamily{univers}\selectfont}
 
-/// font name
-Spread
-Stretch
+6) Имя шрифта
 
+В классическом TeX'е имя шрифта есть только имя шрифта. Но современная версия, XeTeX, умеет по-разному загружать шрифт и понимает параметры. Например,
 
-////////////////////////////
+"[UniversCom-65Bold.ttf]:slant=0.2"
+
+Тут квадратные скобочки означают, что шрифт надо просить не у системы, а грузить напрямую из файла. А параметр "slant" означает, что шрифт надо немного наклонить. Больше параметров тут:
+
+http://www.tex.ac.uk/tex-archive/info/xetexref/XeTeX-reference.pdf
+
+7) Новый стиль параграфа
+
+doc = sth()
+p = doc.create_para_style('MyPara',
+  parskip='8mm', baselineskip='4.2mm', fontsize='4mm')
+doc.add(p('Lorem ipsum dolor sit amet....'))
+doc.add(p('Duis autem vel eum iriure....'))
+doc.add(p('Ut wisi enim ad minim veniam....'))
+
+Получится:
 
 \documentclass{texml}
-
+\newenvironment{MyPara}{%
+\setlength\parskip{8mm}%
+\setlength\baselineskip{4.2mm}%
+\fontsize{4mm}{\baselineskip}\selectfont
+\ignorespaces}{\par\ignorespaces}
 \begin{document}
-что-то
-\begin{HeaderI}Hello, World!\end{HeaderI}
-\end{docuent}
+\begin{MyPara}Lorem ipsum dolor sit amet....\end{MyPara}
+\begin{MyPara}Duis autem vel eum iriure....\end{MyPara}
+\begin{MyPara}Ut wisi enim ad minim veniam....\end{MyPara}
+\end{document}
 
-* Прежполагается, что символьный стиль "Bold" определён.
-* "что-то" расписано ниже
-* Вместо "Header1" создаётся "HeaderI", т.к. цифры в TeX-командах не разрешены. Также надо придумать преобразование для пробелов и других не-ascii-букв.
+Вызов
+
+create_para_style('ParaName', options)
+
+преобразуется в
+
+\newenvironment{ParaName}{Options1 \ignorespaces}%
+{\par Options2 \ignorespaces}
+
+(Вторая скобка используется для \begin{ParaName}, третья -- для \end{ParaName}. Параметры придётся раскладывать по нескольким местам.)
+
+Если есть родительский стиль, то преобразование такое:
+
+\newenvironment{ParaName}%
+{\begin{ParentStyle}Options1 \ignorespaces}%
+{\end{ParentStyle} Options2}
+
+Параметры.
 
 Стили параграфа, параметры (по мотивам FrameMaker):
 
-Basic:
-Indents: first, left, right
-Alignment: left/center/right/justified
-space: above paragraph, below
-line spacing (== baselineskip)
-tab stops: TODO продумать. Наверное, не будет сделано.
+indent_first w   ==>  \setlength\parindent{w}
+indent_left  w   ==>  \addtolength\leftskip{w}
+indent_right w   ==>  \addtolength\rightskip{w}
+align_left       ==>  \AlignLeft
+align_right      ==>  \AlignRight
+align_center     ==>  \AlignCenter
+align_justified  ==>  \AlignJustified
+space_above w    ==>  \SpaceAbove{w}
+space_below w    ==>  \SpaceBelow{w} // Options2
+line_spacing w   ==>  \setlength\baselineskip{w}
+настройки шрифта, как в символьном стиле
 
-Default Font:
-Family
-Size
-Angle
-weight
-Variation
-Color
-Spread
-Stretch
-Language
-Pair Kern
-Underline (+double, +numeric)
-Overline
-Strikethrough
-Change bar
-Superscript/subscript
-Small Caps/lowercase/uppercase
-pair kern
-
-Pagination:
-Start: anywhere/top of column/page/left page/right page
-keep with: next paragraph, previous paragraph
-widow/orphan lines
-format: in column, run-in-head, side head (first baseline, top edge, last baseline)
-across all columns
-across all columns and side heads
-
-Numbering:
-Autonumber format
-Character format for numbering
-Position: start of paragraph, end of paragraph
-
-
-
+(Команды \Align.. и \Space.. ещё не готовы)
